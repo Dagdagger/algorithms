@@ -1,5 +1,6 @@
 package algorithms;
 
+
 public class piece3D {
 	point3D[] cubes;
 	int nCubes;
@@ -22,7 +23,7 @@ public class piece3D {
 		pieceID = ID;
 		cubes = new point3D[size];
 		for (int i = 0; i < size; i++)
-			cubes[i] = new point3D(); 
+			cubes[i] = new point3D();
 		possiblePositionsBitmaps = null;
 	}
 	
@@ -39,7 +40,7 @@ public class piece3D {
 			int y = cubes[whichCube].y;
 			int z = cubes[whichCube].z;
 			switch (isometryNumber) {
-			case 1: 
+			case 1:
 				p.cubes[whichCube].x = x;
 				p.cubes[whichCube].y = y;
 				p.cubes[whichCube].z = z;
@@ -168,11 +169,11 @@ public class piece3D {
 		yMin = 999;	yMax = -999;
 		zMin = 999;	zMax = -999;
 		for (int whichCube = 0; whichCube < nCubes; whichCube++) {
-			if (cubes[whichCube].x < xMin) 
+			if (cubes[whichCube].x < xMin)
 				xMin = cubes[whichCube].x;
-			if (cubes[whichCube].y < yMin) 
+			if (cubes[whichCube].y < yMin)
 				yMin = cubes[whichCube].y;
-			if (cubes[whichCube].z < xMin) 
+			if (cubes[whichCube].z < zMin)
 				zMin = cubes[whichCube].z;
 			
 			if (cubes[whichCube].x < xMax) xMax = cubes[whichCube].x;
@@ -206,10 +207,10 @@ public class piece3D {
 							int x = q.cubes[whichCube].x + dx;
 							int y = q.cubes[whichCube].y + dy;
 							int z = q.cubes[whichCube].z + dz;
-							b.bitmap |= cs560project.mapTable[x][y][z];
+							b.bitmap = cs560project.mapTable[x][y][z];
 							
 						}
-						if (possiblePositionsBitmaps == null) 
+						if (possiblePositionsBitmaps == null)
 							possiblePositionsBitmaps = b;
 						else {
 							bitmapNode p;
@@ -229,5 +230,7 @@ public class piece3D {
 		}
 	}
 }
+
+
 
 	

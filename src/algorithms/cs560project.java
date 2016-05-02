@@ -1,5 +1,13 @@
 package algorithms;
 
+
+/* 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
 public class cs560project {
 	public static final int N = 3;
 	public static int[][][] mapTable;
@@ -27,6 +35,14 @@ public class cs560project {
 				zInvTable[count] = iz;
 				count++;
 			}
+	
+	
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	piece3D p = new piece3D ('A', 4);
 	p.setCube(1,1,0,0);
 	p.setCube(2,1,0,1);
