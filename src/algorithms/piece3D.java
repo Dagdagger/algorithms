@@ -1,6 +1,5 @@
 package algorithms;
 
-
 public class piece3D {
 	point3D[] cubes;
 	int nCubes;
@@ -18,6 +17,7 @@ public class piece3D {
 	int zMax;
 	int zPan;
 	
+	
 	public piece3D (char ID, int size) {
 		nCubes = size; 
 		pieceID = ID;
@@ -27,20 +27,22 @@ public class piece3D {
 		possiblePositionsBitmaps = null;
 	}
 	
-	public void setCube (int whichCube, int ix, int iy, int iz ) {
+	public void setCube (int whichCube, int ix, int iy, int iz) {
 		cubes[whichCube].x = ix;
 		cubes[whichCube].y = iy;
 		cubes[whichCube].z = iz;
+		
 	}
+	
 	
 	public piece3D applyIsometry(int isometryNumber) {
 		piece3D p = new piece3D (pieceID, nCubes);
-		for (int whichCube = 0; whichCube < p.nCubes; whichCube++){
+		for (int whichCube = 0; whichCube < p.nCubes; whichCube++) {
 			int x = cubes[whichCube].x;
 			int y = cubes[whichCube].y;
 			int z = cubes[whichCube].z;
 			switch (isometryNumber) {
-			case 1:
+			case 1: 
 				p.cubes[whichCube].x = x;
 				p.cubes[whichCube].y = y;
 				p.cubes[whichCube].z = z;
@@ -163,34 +165,39 @@ public class piece3D {
 			}
 		}
 		return p;
+		
+		
 	}
+	
 	public void normalizePiece() {
-		xMin = 999;	xMax = -999;
-		yMin = 999;	yMax = -999;
-		zMin = 999;	zMax = -999;
+		xMin = 999; xMax =-999;
+		yMin = 999; yMax =-999;
+		zMin = 999; zMax =-999;
+		
+		
 		for (int whichCube = 0; whichCube < nCubes; whichCube++) {
-			if (cubes[whichCube].x < xMin)
+			if (cubes[whichCube].x < xMin) 
 				xMin = cubes[whichCube].x;
-			if (cubes[whichCube].y < yMin)
+			if (cubes[whichCube].y < yMin) 
 				yMin = cubes[whichCube].y;
-			if (cubes[whichCube].z < zMin)
+			if (cubes[whichCube].z < zMin) 
 				zMin = cubes[whichCube].z;
-			
-			if (cubes[whichCube].x < xMax) xMax = cubes[whichCube].x;
-			if (cubes[whichCube].y < yMax) yMax = cubes[whichCube].y;
-			if (cubes[whichCube].z < zMax) zMax = cubes[whichCube].z;
+			if (cubes[whichCube].x > xMax) 
+				xMax = cubes[whichCube].x;
+			if (cubes[whichCube].y > yMax) 
+				yMax = cubes[whichCube].y;
+			if (cubes[whichCube].z > zMax) 
+				zMax = cubes[whichCube].z;
 		}
-		for (int whichCube = 0; whichCube < nCubes; whichCube++) {
-			cubes[whichCube].x -= xMin;
-			cubes[whichCube].y -= yMin;
-			cubes[whichCube].z -= zMin;
+			for (int whichCube = 0; whichCube < nCubes; whichCube++){
+				cubes[whichCube].x -= xMin;
+				cubes[whichCube].y -= yMin;
+				cubes[whichCube].z -= zMin;
+			}
 			
-		}
-		xPan = cs560project.N - (xMax - xMin + 1);
-		yPan = cs560project.N - (yMax - yMin + 1);
-		zPan = cs560project.N - (zMax - zMin + 1);
-		
-		
+			xPan = cs560project.N - (xMax - xMin + 1);
+			yPan = cs560project.N - (yMax - yMin + 1);
+			zPan = cs560project.N - (zMax - zMin + 1);
 	}
 	
 	public void findAllPossiblePositionsAsBitmaps() {
@@ -198,39 +205,37 @@ public class piece3D {
 		for (int whichIsometry = 1; whichIsometry <= 24; whichIsometry++) {
 			piece3D q = applyIsometry(whichIsometry);
 			q.normalizePiece();
-			for (int dx = 0; dx <= q.xPan; dx++) 
-				for(int dy = 0; dy <= q.yPan; dy++)
+			for (int dx = 0; dx <= q.xPan; dx++)
+				for (int dy = 0; dy <= q.yPan; dy++) 
 					for (int dz = 0; dz <= q.zPan; dz++) {
 						bitmapNode b = new bitmapNode();
 						for (int whichCube = 0; whichCube < q.nCubes; whichCube++) {
-			
 							int x = q.cubes[whichCube].x + dx;
 							int y = q.cubes[whichCube].y + dy;
 							int z = q.cubes[whichCube].z + dz;
-							b.bitmap = cs560project.mapTable[x][y][z];
-							
+							b.bitmap |= cs560project.mapTable[x][y][z];
 						}
 						if (possiblePositionsBitmaps == null)
 							possiblePositionsBitmaps = b;
 						else {
 							bitmapNode p;
 							p = possiblePositionsBitmaps;
-							while ((p.link != null) && (p.bitmap != b.bitmap) )
+							while ((p.link != null) && (p.bitmap != b.bitmap))
 								p = p.link;
 							if (p.bitmap != b.bitmap) {
 								positionIndex++;
 								System.out.println("====== " + positionIndex);
 								
 								p.link = b;
-								System.out.println("intergradted bitmap " + b.bitmap);
+								System.out.println("integrated bitmap " + b.bitmap);
 							}
 						}
 					}
-						
 		}
 	}
+	
+	
+	
+
 }
-
-
-
 	
