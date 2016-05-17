@@ -1,8 +1,22 @@
 package algorithms;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class cs560project
 {
-    public static final int N = 3 ;  // hint assumes 3x3x3 solution cube
-    public static final int P = 7 ;  // hint assumes 7 pieces in puzzle
+    public static int N;
+    public static  int P;
+    
+    public static int pieceNumber;
+    public static int cubeNumber;
+    
+    
+    
+    
 
     public static int[][][] mapTable ;
     public static int[] xInvTable ;
@@ -24,7 +38,7 @@ public class cs560project
     {
       //--- fill 3x3x3 char matrix with piece ID's per solution piece placements decoded from solution bitmaps
       
-        for ( int whichPiece = 0 ; whichPiece < 7 ; whichPiece++ )
+        for ( int whichPiece = 0 ; whichPiece < P ; whichPiece++ )
           {
             char idChar = pieces[whichPiece].pieceID ;
             int integratedBitmap = solution[whichPiece] ;
@@ -63,6 +77,32 @@ public class cs560project
     
     //=====================================================================================================
     
+   
+    public static void DFS ( int level , int priorPartialSolution ) 
+    {
+
+    	if ( level == P ) 
+        {
+           outputSolution( ) ;       
+       		System.exit(0);
+        }
+    	else {
+    		for (Integer ptr : pieces[level].possiblePositionsBitmaps.values() ){
+    			int overlap = priorPartialSolution & ptr ;
+                if ( overlap == 0 ) // no overlap
+                  {
+                    solution[level] = ptr ;
+                    DFS ( level+1 , priorPartialSolution | ptr ) ;
+                  }
+    		}
+    	}
+    	
+    	
+      
+    }
+    
+    
+    /* bitmap code Breadth First Search
     
     public static void BFS ( int level , int priorPartialSolution ) 
     {
@@ -71,11 +111,11 @@ public class cs560project
         if ( level == P ) 
             {
                outputSolution( ) ;
-               continuing = false ;      
+               continuing = false;    
             }
           else
             {
-              bitmapNode ptr = pieces[level].possiblePositionsBitmaps ;
+               bitmapNode ptr = pieces[level].possiblePositionsBitmaps ;
               while ( (ptr != null) && continuing )
                 {
                   int overlap = priorPartialSolution & ptr.bitmap ;
@@ -89,15 +129,28 @@ public class cs560project
             }
     }
     
-    
+    */
     //=====================================================================================================
     
     
-    public static void main(String[] args)
+    public static void main(String[] args ) throws IOException 
     {
-        
-      //--- instantiate and compute table for forward and co-inverse bitmap mapping(s)
-      
+    	int counterN = 0;
+    	char pieceName = 'A';
+    	char charcounter = 'A';
+    	FileInputStream finput = new FileInputStream("src/text2.txt");
+    	BufferedReader buffRead = new BufferedReader(new InputStreamReader(finput));
+    	
+    	String line_counter = null;
+    	line_counter = buffRead.readLine(); //Scanner
+    	N = Integer.parseInt(line_counter);  //new N
+    	line_counter = buffRead.readLine();
+    	P = Integer.parseInt(line_counter);
+    	
+    	pieces = new piece3D[P];    //any pieces from line 2 of textfile
+    	solution = new int[P] ;
+        solutionCharMatrix = new char[N][N][N] ;  
+
         mapTable  = new int[N][N][N] ;
         xInvTable = new int[N*N*N] ;
         yInvTable = new int[N*N*N] ;
@@ -113,68 +166,47 @@ public class cs560project
                 zInvTable[count] = iz ;
                 count++ ;
               }
-
-      //--- instantiate solution bitmap vector and solution character matrix  
-      
-        solution = new int[7] ;
-        solutionCharMatrix = new char[N][N][N] ;  
-            
-      //--- instantiate the pieces comprising the puzzle, as an array of piece3D objects indexed from 0     
-            
-        pieces = new piece3D[7] ; // for this hint, the puzzle is assumed to use 7 pieces      
-      
-        pieces[0] = new piece3D( 'A' , 4 ) ;
-        pieces[0].setCube(0,0,0,0) ;  // unit cubes comprising a piece are indexed from 0
-        pieces[0].setCube(1,1,0,0) ;
-        pieces[0].setCube(2,2,0,0) ;
-        pieces[0].setCube(3,0,0,1) ;
-      
-        pieces[1] = new piece3D( 'B' , 4 ) ;
-        pieces[1].setCube(0,0,0,0) ;
-        pieces[1].setCube(1,1,0,0) ;
-        pieces[1].setCube(2,1,0,1) ;
-        pieces[1].setCube(3,2,0,1) ;
-      
-        pieces[2] = new piece3D( 'C' , 3 ) ;
-        pieces[2].setCube(0,0,0,0) ;
-        pieces[2].setCube(1,1,0,0) ;
-        pieces[2].setCube(2,1,0,1) ;
-      
-        pieces[3] = new piece3D( 'D' , 5 ) ;
-        pieces[3].setCube(0,0,0,0) ;
-        pieces[3].setCube(1,1,0,0) ;
-        pieces[3].setCube(2,0,1,0) ;
-        pieces[3].setCube(3,1,1,0) ;
-        pieces[3].setCube(4,0,0,1) ;
-      
-        pieces[4] = new piece3D( 'E' , 5 ) ;
-        pieces[4].setCube(0,0,0,0) ;
-        pieces[4].setCube(1,1,0,0) ;
-        pieces[4].setCube(2,1,0,1) ;
-        pieces[4].setCube(3,0,1,0) ;
-        pieces[4].setCube(4,0,1,1) ;
-      
-        pieces[5] = new piece3D( 'F' , 3 ) ;
-        pieces[5].setCube(0,0,0,0) ;
-        pieces[5].setCube(1,1,0,0) ;
-        pieces[5].setCube(2,2,0,0) ;
-      
-        pieces[6] = new piece3D( 'G' , 3 ) ;
-        pieces[6].setCube(0,0,0,0) ;
-        pieces[6].setCube(1,0,1,0) ;
-        pieces[6].setCube(2,0,2,0) ;
-
-      //--- compute lists of possible positions for each piece
-      
-        for ( int whichPiece = 0 ; whichPiece < 7 ; whichPiece++ ) 
-          pieces[whichPiece].findAllPossiblePositionsAsBitmaps( ) ;
         
-      //--- BFS to examine all combinations of piece placement for each of seven pieeces to find solution
-      
-        continuing = true ;
-        BFS ( 0 , 0 ) ;
+        for (int i = 0; i < P; i++) {    
+        	line_counter = buffRead.readLine();
+        	pieceNumber = Integer.parseInt(line_counter);
+        	line_counter = buffRead.readLine();
+        	cubeNumber = Integer.parseInt(line_counter);
+        	
+        	
+     	pieces[pieceNumber - 1] = new piece3D(pieceName, cubeNumber);
+     	pieceName++;
+        	for (int x = 0; x < cubeNumber; x++) {
+        		String str = buffRead.readLine();
+        		// 3x3
+        		int arr []  = new int [N];
+        		for (int y = 0; y < N*2; y+=2) {	
+        			char c =  str.charAt(y);
+        			int k = (int)c - (int)'0';
+        			if (counterN == N){
+        				counterN=0;
+        			}
+        			arr[counterN] = k;
+        			counterN++; 
+
+        		}
+        		
+        		pieces[pieceNumber-1].setCube(x, arr[0], arr[1], arr[2]);
+        	}
+        }
+
+        for ( int whichPiece = 0 ; whichPiece < P ; whichPiece++ ){ 
+          pieces[whichPiece].findAllPossiblePositionsAsBitmaps( ) ;
+        }
+        
+        /* Bitmap code
+        continuing = true;
+        */
+        
+        DFS ( 0 , 0 ) ;
       
     }
 
-
 }
+// ------------------------------
+//----------------------------

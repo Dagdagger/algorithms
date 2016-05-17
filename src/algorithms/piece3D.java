@@ -1,11 +1,20 @@
+
 package algorithms;
+
+
+/* If using the HashMap
+ * import HashMap and change the TreeMap
+ */
+
+import java.util.HashMap;
+import java.util.TreeMap;
 
 public class piece3D
 {
   point3D[]   cubes ;
   int         nCubes ;
   char        pieceID ;
-  bitmapNode  possiblePositionsBitmaps ;
+  public TreeMap<Integer,Integer> possiblePositionsBitmaps;
   int         xMin ;
   int         xMax ;
   int         xPan ;
@@ -25,7 +34,7 @@ public class piece3D
     cubes = new point3D[size] ;
     for ( int i = 0 ; i < size ; i++ ) 
       cubes[i] = new point3D( ) ;
-    possiblePositionsBitmaps = null ;
+    possiblePositionsBitmaps = new TreeMap<Integer, Integer>();
   }
 //
 //----------------------------------------------------------------------
@@ -185,54 +194,58 @@ public class piece3D
 //
   public void findAllPossiblePositionsAsBitmaps( ) 
   {
-    int positionIndex = 0 ;   
+    //int positionIndex = 0 ;   
     for ( int whichIsometry = 1 ; whichIsometry <= 24 ; whichIsometry++ ) 
       {
         piece3D q = applyIsometry(whichIsometry) ;
         q.normalizePiece( ) ;
+        
+        outterloop:
         for ( int dx = 0 ; dx <= q.xPan ; dx++ ) 
          for ( int dy = 0 ; dy <= q.yPan ; dy++ ) 
           for ( int dz = 0 ; dz <= q.zPan ; dz++ )
             {
-              bitmapNode b = new bitmapNode( ) ;
+              int b = 0;
               for ( int whichCube = 0 ; whichCube < q.nCubes ; whichCube++ )
                 {
                   int x = q.cubes[whichCube].x + dx ;
                   int y = q.cubes[whichCube].y + dy ;
                   int z = q.cubes[whichCube].z + dz ;
-                 // b.bitmap |= cs560project.mapTable[x][y][z] ;
-                  System.out.println("mapTable (" + x + ", "+ y +", " + z+ ")");
+                  b |= cs560project.mapTable[x][y][z] ;
                 }
               
-              System.out.println("");
-              System.out.println("");
-              System.out.println("");
-
+              if (! possiblePositionsBitmaps.containsKey(b)) {
+            	  possiblePositionsBitmaps.put(b,b);  
+              }
+              else break outterloop;
               
-             
-              if ( possiblePositionsBitmaps == null )
+             /* IF USING BITMAP USE THE FOLLOWING CODE
+              * 
+              *  if ( possiblePositionsBitmaps == null )
                   possiblePositionsBitmaps = b ;
                 else
                   {
                     bitmapNode p ; 
                     p = possiblePositionsBitmaps ;
-                    while ( (p.link != null) && (p.bitmap != b.bitmap) )
+                    while ( (p.link != null) && (p.bitmap != b.bitmap) ){
                       p = p.link ;
+                    }
                     if ( p.bitmap != b.bitmap )
                       {
-                        positionIndex++ ;
+                        //positionIndex++ ;
                         //System.out.println( pieceID + " ======= " + positionIndex ) ; //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
                         
                         p.link = b ;
                         //System.out.println( "integrated bitmap " + b.bitmap) ; &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
                       }
-                  }
+                    else break outterloop;
+                  } */
             }
       }
   }
+}
+
 
 //
 //----------------------------------------------------------------------
 //
-    
-}
